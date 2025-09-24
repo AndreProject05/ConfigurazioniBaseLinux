@@ -1,0 +1,117 @@
+Domande da porsi:
+1.CPU - il processore è sovraccarico?
+2.Memoria - c'è abbastanza RAM?
+3.Disco - I/O lento o spazio insufficiente?
+4.Rete - Problemi di connetività?
+5.Processi - Quali applicazioni consumano risorse
+
+1. Analisi CPU
+
+#vedere il carico cpu in tempo reale
+top 
+
+#versione più user-friendly
+htop
+
+#carico medio del sistema
+uptime
+
+#informazioni dettagliate cpu
+lscpu
+
+#processi che usano più cpu
+ps aux --sort=-%cpu | head - 10
+
+cosa guardare:
+- load average > numero di CPU core = sovraccarico
+- processi con alta %CPU
+- wait time (wa) alto = problemi I/O
+
+2. Analisi memoria
+
+#stato memoria
+free -h
+
+#memoria dettagliata
+cat /proc/meminfo
+
+# processi che usano più RAM
+ps aux --sort=-%mem | head -10
+
+#vedere se c'è swap in uso (male)
+swapon --show
+
+cosa guardare:
+- available memory bassa
+- swap in uso pesante
+- processi "memory hungry
+
+3. Analisi Disco 
+
+#spazio disco disponibile
+df -h
+
+#cartelle che occupano più spazio
+du -sh /* | sort -rh
+
+#attività I/O in tempo reale
+iotop
+
+#statistiche I/O
+iostat -x 1
+
+cosa guardare:
+- filesystem pieni (>90%)
+- alto %util in iostat 
+- processi con molto I/O
+
+
+4. Analisi rete 
+
+#connessioni attive 
+netstat -tuln
+
+#interfacce di rete e statistiche 
+ip -s link show 
+
+#test connettività
+ping -c 4 8.8.8.8
+
+5. Analisi processi generali
+
+#vedere tutti i processi 
+ps aux
+
+#albero dei processi
+pstree
+
+#processi zombie o in stato anomalo
+ps aux | grep -E "defunct|zombie"
+
+Approccio diagnostica su un server web lento
+
+#panoramica generale del sistema
+uptime && free -h
+#cerco load average alto + memoria disponibile
+
+#identifico processi problematici 
+top
+#cerco processi con alta %CPU, specialmente httpd/nging/apache
+
+#focus su processi web specifici
+ps aux | grep -E "(apache|nginx|httpd)" | head -10
+#cerco quanti processi web sono attivi e quanto consumano 
+
+#controllo spazio disco (i log possono riempirsi)
+df -h && du -sh /var/log
+#cerco filesystem pieni, log enormi che rallentano I/O
+
+#verifico connessioni web attive
+netstat -tuln | grep :80
+#cerco troppe connessioni in attesa o bloccate 
+
+
+
+
+
+
