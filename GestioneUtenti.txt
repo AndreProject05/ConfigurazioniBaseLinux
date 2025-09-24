@@ -1,0 +1,53 @@
+1. Configurazione di nuovo utente con accesso a sudo 
+
+#creare un nuovo utente 
+sudo useradd -m -s /bin/bash nome_utente
+
+#impostare la password 
+sudo passwd nome_utente
+
+#aggiungere utente nel gruppo sudo 
+sudo usermod -aG sudo nome_utente
+
+#verificare che l'utente sia stato creato correttamente
+sudo id nome_utente
+groups nome_utente
+
+parametri :
+-m -> crea automaticamente la home directory
+-s -> imposta una shell
+-passwd -> comando per impostare / cambiare password
+-aG -> specifica dei gruppi secondari e aggiungili in append
+
+2. Testare utente
+
+#cambiare utente 
+su - nome_utente 
+
+#testare i privilegi sudo 
+sudo whoami
+
+3. File di configurazioni da conoscere
+
+#configurazione sudo
+cat /etc/sudoers  
+
+#vedere utenti del sistema 
+cat /etc/passwd 
+
+#vedere i gruppi 
+cat /etc/group 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
