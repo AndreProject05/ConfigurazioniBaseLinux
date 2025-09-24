@@ -1,0 +1,120 @@
+1. File configurazione principale
+
+#modificare configurazioni ssh
+sudo nano /etc/ssh/sshd_config
+
+---------------------------------------------------------------
+2. Modifiche di sicurezza base
+
+Cambiamo la porta predefinita:
+
+#nel file sshd_config
+Port 2222
+#invece della porta 22 standard (troppo esposta)
+
+Disabilitare login root:
+
+PermitRootLogin no 
+#impedire login diretto come root
+
+Limitare utenti autorizzati:
+
+AllowUsers mario luigi
+#solo questi utenti possono connettersi via ssh
+
+Ridurre tentativi di login:
+
+MaxAuthTries 3
+#massimo 3 ternativi di password prima di bloccare
+
+Timeout connessioni Inattive:
+
+ClientAliveInterval 300
+ClientAliveCountMax 2
+#disconnette dopo 10 minuti di inattività 
+
+--------------------------------------------------------------------------
+
+3. Autenticazione a chiavi(più sicura)
+
+Disablitare accesso via password, usare solo chiavi:
+
+PasswordAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile .ssh/authorized_keys
+
+-------------------------------------------------------------------------
+
+4. Applicare le modifiche
+
+#verificare la configurazione prima di riavviare 
+sudo sshd -t
+
+#se tutto ok, riavviare ssh 
+sudo systemctl restart sshd
+
+#verificare che sia attivo sulla nuova porta
+sudo netstat -tuln | grep 2222
+
+---------------------------------------------------------------------------
+
+Setup completo delle chiavi ssh su Client
+
+#generare coppia di chiavi
+ssh-keygen -t rsa -b 4096 -C "email di esempio"
+
+#copiare chiave pubblica sul server 
+ssh-copy-id -p 2222 host/ip
+
+Sul server:
+
+#creare directory .ssh se non esiste
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+
+#aggiungere la chiave alle autorizzate
+cat ~/chiave_temp.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+#rimuovere file temporaneo
+rm ~/chiave_temp.pub
+
+#con ufw (più semplice)
+sudo ufw allow 2222/tcp
+sudo ufw deny 22/tcp
+sudo ufw enable
+
+#con iptables (più tradizionale)
+sudo iptables -A INPUT -p tcp --dport 2222 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+
+#testare connessione con nuova porta
+ssh -p 2222 nome@server.example.com
+
+#verificare che la porta 22 sia bloccata (dovrebbe fallire)
+ssh nome@server.example.com
+
+#testare autenticazione a chiavi
+ssh -p 2222 -i ~/.ssh/id_rsa nome@server.example.com
+
+# File /etc/ssh/sshd_config ottimizzato
+Port 2222
+PermitRootLogin no
+PasswordAuthentication no
+PubkeyAuthentication yes
+AllowUsers mario luigi
+MaxAuthTries 3
+ClientAliveInterval 300
+ClientAliveCountMax 2
+X11Forwarding no -- impedisce esecuzione di server grafico
+AllowTcpForwarding no -- impedisce di creare tunnel di rete indesiderati
+Protocol 2 -- protocollo più stabile, l'1 è deprecato
+
+#vedere tentativi di login SSH
+sudo journalctl -U ssh -f
+
+#log degli accessi
+sudo tail -f /var/log/auth.log
+
+#vedere chi è connesso ora
+who 
