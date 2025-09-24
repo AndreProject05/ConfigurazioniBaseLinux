@@ -4,6 +4,7 @@ Domande da porsi:
 3.Disco - I/O lento o spazio insufficiente?
 4.Rete - Problemi di connetività?
 5.Processi - Quali applicazioni consumano risorse
+----------------------------------------------------------------
 
 1. Analisi CPU
 
@@ -27,6 +28,8 @@ cosa guardare:
 - processi con alta %CPU
 - wait time (wa) alto = problemi I/O
 
+----------------------------------------------------------------------
+
 2. Analisi memoria
 
 #stato memoria
@@ -45,6 +48,8 @@ cosa guardare:
 - available memory bassa
 - swap in uso pesante
 - processi "memory hungry
+
+--------------------------------------------------------------------
 
 3. Analisi Disco 
 
@@ -65,6 +70,7 @@ cosa guardare:
 - alto %util in iostat 
 - processi con molto I/O
 
+------------------------------------------------------------------------------------
 
 4. Analisi rete 
 
@@ -77,6 +83,8 @@ ip -s link show
 #test connettività
 ping -c 4 8.8.8.8
 
+----------------------------------------------------------------------------------------
+
 5. Analisi processi generali
 
 #vedere tutti i processi 
@@ -87,6 +95,9 @@ pstree
 
 #processi zombie o in stato anomalo
 ps aux | grep -E "defunct|zombie"
+
+-----------------------------------------------------------------------------------------
+
 
 Approccio diagnostica su un server web lento
 

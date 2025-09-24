@@ -19,6 +19,8 @@ parametri :
 -passwd -> comando per impostare / cambiare password
 -aG -> specifica dei gruppi secondari e aggiungili in append
 
+---------------------------------------------------------------------------
+
 2. Testare utente
 
 #cambiare utente 
@@ -26,6 +28,8 @@ su - nome_utente
 
 #testare i privilegi sudo 
 sudo whoami
+
+----------------------------------------------------------------------------
 
 3. File di configurazioni da conoscere
 
